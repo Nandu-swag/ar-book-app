@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AR Book Tracker</title>
+    <!-- Load Tailwind CSS for styling the instructions overlay -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Load A-Frame and AR.js libraries -->
+    <!-- A-Frame (for 3D primitives and scene structure) -->
+    <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+    <!-- AR.js (Marker Tracking) -->
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+
+    <style>
+        /* Hide the default A-Frame scene elements and force full screen */
+        body { margin: 0; overflow: hidden; }
+        .ar-scene-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        /* Ensure the AR debug canvas (if enabled) is styled correctly */
+        .a-canvas {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- Tailwind Overlay for Instructions -->
+    <div id="instructions" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50 p-4">
+        <div class="bg-white p-6 md:p-10 rounded-xl shadow-2xl max-w-lg w-full text-center">
+            <h1 class="text-3xl font-bold text-indigo-600 mb-4 font-sans">Augmented Reality Book Demo</h1>
+            <p class="text-lg text-gray-700 mb-6">
+                To activate the AR experience, please point your camera at the **Barcode Marker with the value 6**.
+            </p>
+            <div class="p-4 bg-indigo-50 rounded-lg mb-6 border border-indigo-200">
+                <p class="text-sm text-indigo-800 font-medium">
+                    You can find this marker by searching online for "AR.js barcode marker 6" and displaying it on a screen or printing it.
+                </p>
+            </div>
+            <button onclick="document.getElementById('instructions').style.display = 'none';" 
+                    class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transition duration-300 transform hover:scale-105">
+                Start AR Camera
+            </button>
+        </div>
+    </div>
+
+    <!-- AR Scene (The main component powered by A-Frame and AR.js) -->
+    <div class="ar-scene-container">
+        <!-- 
+            <a-scene>: Defines the 3D/AR world.
+            embedded: Allows it to run inline in the HTML page.
+            arjs: Configuration for the AR library. 
+                - sourceType: webcam (uses camera)
+                - trackingMethod: best (optimal performance)
+                - debugUIEnabled: false (hides the internal debug panel)
+        -->
+        <a-scene embedded arjs='sourceType: webcam; trackingMethod: best; debugUIEnabled: false;'>
+            
+            <!-- 
+                <a-marker>: Defines the augmented content anchor point.
+                type='barcode': Specifies that we are tracking a barcode marker.
+                value='6': Specifies the exact barcode number to look for.
+            -->
+            <a-marker type='barcode' value='6'>
+                
+                <!-- The 3D object to overlay on the marker -->
+                <a-box 
+                    position='0 0.5 0' 
+                    rotation='0 45 0' 
+                    color='#FF0055' 
+                    shadow 
+                    scale="0.8 0.8 0.8"
+                    animation="property: rotation; to: 0 360 0; loop: true; dur: 3000; easing: linear">
+                </a-box>
+                
+                <!-- Optional: Add 3D text floating above the cube -->
+                <a-text 
+                    value="AUGMENTED BOOK" 
+                    align="center"
+                    width="2" 
+                    position="0 1.5 0" 
+                    color="#FFFFFF"
+                    font="https://cdn.aframe.io/fonts/Aileron-Semibold.fnt">
+                </a-text>
+
+            </a-marker>
+            
+            <!-- Standard camera required for the AR scene -->
+            <a-entity camera></a-entity>
+            
+        </a-scene>
+    </div>
+
+</body>
+</html>
